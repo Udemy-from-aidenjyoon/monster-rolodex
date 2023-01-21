@@ -39,6 +39,26 @@ class App extends Component {
 
     return (
       <div className="App">
+        <input
+          className="search-box"
+          type="search"
+          placceholder="search monsters"
+          onChange={(event) => {
+            // detect changes to input
+            // lower case every search input
+            const searchString = event.target.value.toLocaleLowerCase();
+
+            // filter through monsters list
+            const filteredMonsters = this.state.monsters.filter((monster) => {
+              // returns True or False based on lower case of monster's name
+              return monster.name.toLocaleLowerCase().includes(searchString);
+            });
+
+            this.setState(() => {
+              return { monsters: filteredMonsters };
+            });
+          }}
+        />
         {this.state.monsters.map((monster, idx) => {
           return <h1 key={idx}>{monster.name}</h1>;
         })}
