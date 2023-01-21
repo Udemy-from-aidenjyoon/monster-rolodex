@@ -8,17 +8,15 @@ class App extends Component {
   constructor() {
     super();
 
-    console.log("1");
     this.state = {
       monsters: [],
+      searchField: "",
     };
   }
 
   // runs right after the first rendering as thats when component mounts
   // re-renders when setState gets called
   componentDidMount() {
-    console.log("3");
-
     fetch("https://jsonplaceholder.typicode.com/users")
       .then((response) => response.json())
       .then((users) => {
@@ -35,7 +33,12 @@ class App extends Component {
 
   // what to show
   render() {
-    console.log("2");
+    // filter through monsters list
+    const filteredMonsters = this.state.monsters.filter((monster) => {
+      // returns True or False based on lower case of monster's name
+
+      return monster.name.toLocaleLowerCase().includes(this.state.searchField);
+    });
 
     return (
       <div className="App">
@@ -46,20 +49,12 @@ class App extends Component {
           onChange={(event) => {
             // detect changes to input
             // lower case every search input
-            const searchString = event.target.value.toLocaleLowerCase();
-
-            // filter through monsters list
-            const filteredMonsters = this.state.monsters.filter((monster) => {
-              // returns True or False based on lower case of monster's name
-              return monster.name.toLocaleLowerCase().includes(searchString);
-            });
-
-            this.setState(() => {
-              return { monsters: filteredMonsters };
+            this.setState({
+              searchField: event.target.value.toLocaleLowerCase(),
             });
           }}
         />
-        {this.state.monsters.map((monster, idx) => {
+        {filteredMonsters.map((monster, idx) => {
           return <h1 key={idx}>{monster.name}</h1>;
         })}
       </div>
