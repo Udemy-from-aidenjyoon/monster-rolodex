@@ -1,7 +1,8 @@
 import { Component } from "react";
 
-import logo from "./logo.svg";
 import "./App.css";
+import CardList from "./Components/card-list/card-list.component";
+import SearchBox from "./Components/search-bar/SearchBox.component";
 
 class App extends Component {
   // used to initialize
@@ -31,32 +32,35 @@ class App extends Component {
       });
   }
 
+  onMonsterSearch = (event) => {
+    // detect changes to input
+    // lower case every search input
+    this.setState({
+      searchField: event.target.value.toLocaleLowerCase(),
+    });
+  };
+
   // what to show
   render() {
-    // filter through monsters list
-    const filteredMonsters = this.state.monsters.filter((monster) => {
-      // returns True or False based on lower case of monster's name
+    const { monsters, searchField } = this.state;
+    const { onMonsterSearch } = this;
 
-      return monster.name.toLocaleLowerCase().includes(this.state.searchField);
+    // filter through monsters list
+    const filteredMonsters = monsters.filter((monster) => {
+      // returns True or False based on lower case of monster's name
+      return monster.name.toLocaleLowerCase().includes(searchField);
     });
+
+    console.log(filteredMonsters);
 
     return (
       <div className="App">
-        <input
-          className="search-box"
-          type="search"
-          placceholder="search monsters"
-          onChange={(event) => {
-            // detect changes to input
-            // lower case every search input
-            this.setState({
-              searchField: event.target.value.toLocaleLowerCase(),
-            });
-          }}
+        <SearchBox
+          className="monster search-box"
+          placeholder="seaerch monsters"
+          onChangeHandler={onMonsterSearch}
         />
-        {filteredMonsters.map((monster, idx) => {
-          return <h1 key={idx}>{monster.name}</h1>;
-        })}
+        <CardList monsters={filteredMonsters} />
       </div>
     );
   }
